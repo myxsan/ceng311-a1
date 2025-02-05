@@ -1,0 +1,23 @@
+html, body {
+    height: 100vh; 
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+}
+
+.container {
+    width: 80%;
+    text-align: center;
+    color: azure;
+}
+
+.name {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.bio {
+    padding: 0 20%;
+}
