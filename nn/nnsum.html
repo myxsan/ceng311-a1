@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Networks I — Course Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #3C3489; --purple-l: #EEEDFE; --purple-m: #7F77DD;
+    --teal: #085041;   --teal-l: #E1F5EE;   --teal-m: #1D9E75;
+    --blue: #0C447C;   --blue-l: #E6F1FB;   --blue-m: #378ADD;
+    --amber: #633806;  --amber-l: #FAEEDA;  --amber-m: #EF9F27;
+    --coral: #712B13;  --coral-l: #FAECE7;  --coral-m: #D85A30;
+    --red: #A32D2D;    --red-l: #FCEBEB;
+    --gray: #F5F4F0;   --border: #D8D6CE;
+    --text: #1A1918;   --muted: #6B6860;
+    --mono-bg: #EFEFEB;
+    --ff-sans: 'IBM Plex Sans', sans-serif;
+    --ff-mono: 'IBM Plex Mono', monospace;
+    --ff-serif: 'IBM Plex Serif', serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body {
+    font-family: var(--ff-sans);
+    background: #FAFAF8;
+    color: var(--text);
+    line-height: 1.65;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--purple);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cover-eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 0.6rem;
+  }
+  .cover h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+  .cover-sub {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+  }
+
+  /* ── WEEK HEADERS ── */
+  .week {
+    margin-bottom: 2.5rem;
+  }
+  .week-header {
+    display: flex;
+    align-items: stretch;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+  }
+  .week-label {
+    font-family: var(--ff-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #fff;
+    padding: 0.75rem 1.1rem;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    min-width: 90px;
+  }
+  .week-title-box {
+    flex: 1;
+    padding: 0.75rem 1.1rem;
+    display: flex;
+    align-items: center;
+  }
+  .week-title-box h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 1.3rem; }
+  .section-label {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── CODE BLOCKS ── */
+  .mono {
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: var(--ff-mono);
+    font-size: 0.8rem;
+    line-height: 1.7;
+    margin: 0.5rem 0 0.8rem;
+    white-space: pre;
+    overflow-x: auto;
+    color: #2C2B28;
+  }
+  code {
+    font-family: var(--ff-mono);
+    font-size: 0.82em;
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--blue);
+  }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 0.6rem 0 1rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    background: var(--gray);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #FAFAF7; }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+  /* ── BULLET LIST ── */
+  ul.pts { list-style: none; padding: 0; margin: 0.3rem 0 0.6rem; }
+  ul.pts li {
+    font-size: 0.9rem;
+    padding-left: 1.1rem;
+    margin-bottom: 0.3rem;
+    position: relative;
+  }
+  ul.pts li::before {
+    content: '–';
+    position: absolute; left: 0;
+    color: var(--muted);
+  }
+
+  /* ── FORMULA ── */
+  .formula {
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    color: var(--blue);
+    margin: 0.3rem 0 0.6rem;
+    font-weight: 600;
+  }
+
+  /* color helpers */
+  .w1 .week-label { background: var(--purple); }
+  .w1 .week-title-box { background: var(--purple-l); }
+  .w23 .week-label { background: var(--teal); }
+  .w23 .week-title-box { background: var(--teal-l); }
+  .w4 .week-label { background: var(--blue); }
+  .w4 .week-title-box { background: var(--blue-l); }
+  .w5 .week-label { background: var(--amber); }
+  .w5 .week-title-box { background: var(--amber-l); }
+  .w6 .week-label { background: var(--coral); }
+  .w6 .week-title-box { background: var(--coral-l); }
+
+  @media print {
+    body { padding: 1rem; }
+    .week { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-eyebrow">AYBU · Software Engineering</div>
+  <h1>Neural Networks I</h1>
+  <div class="cover-sub">Complete Course Summary &nbsp;·&nbsp; Weeks 1 – 6</div>
+</div>
+
+<!-- ══ WEEK 1 ══════════════════════════════════════════════════════════════ -->
+<div class="week w1">
+  <div class="week-header">
+    <div class="week-label">WEEK 1</div>
+    <div class="week-title-box"><h2>Introduction to Neural Networks &amp; Perceptrons</h2></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Motivation &amp; Biological Basis</div>
+    <p>Neural networks are inspired by biological neurons — units that receive signals, process them, and fire outputs. Power comes from combining many units into large networks.</p>
+    <p>Historical milestones: McCulloch &amp; Pitts (1943), Rosenblatt perceptron (1958), Minsky &amp; Papert XOR critique (1969), modern deep learning revival.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Perceptron — The Simplest Unit</div>
+    <p>Binary output (0 or 1), threshold activation. Decision boundary is a line:</p>
+    <div class="formula">w1·x1 + w2·x2 + b = 0</div>
+    <p>Perceptrons can compute <strong>AND</strong> and <strong>OR</strong> — but <strong>NOT XOR</strong>, because XOR is not linearly separable (Minsky &amp; Papert, 1969).</p>
+    <p><strong>Solution:</strong> multi-layer networks. Hidden layers learn new feature representations that transform the problem into a linearly separable one in a new space.</p>
+  </div>
+</div>
+
+<!-- ══ WEEK 2–3 ═════════════════════════════════════════════════════════════ -->
+<div class="week w23">
+  <div class="week-header">
+    <div class="week-label">WEEKS 2–3</div>
+    <div class="week-title-box"><h2>Network Topologies, Perceptron Learning &amp; Backpropagation</h2></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Network Types</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>Description</th></tr>
+      <tr><td><strong>Feedforward</strong></td><td>Series of transformations layer by layer. No cycles. Input → hidden → output.</td></tr>
+      <tr><td><strong>Recurrent</strong></td><td>Directed cycles. Previous output/hidden state feeds back. More biologically realistic.</td></tr>
+      <tr><td><strong>Fully connected</strong></td><td>Every node to all others. Asymmetric connections possible. Seldom used (too many params).</td></tr>
+      <tr><td><strong>Layered</strong></td><td>Nodes in layers; no backward connections. Intra-layer connections may exist.</td></tr>
+      <tr><td><strong>Feedforward (strict)</strong></td><td>Only connections from layer i to i+1. Simplest computation.</td></tr>
+      <tr><td><strong>Modular</strong></td><td>Several sub-networks combined for complex tasks.</td></tr>
+    </table></div>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Perceptron Learning Rule</div>
+    <p>Error: <code>e = d - y</code>. Three cases: correct (no change), y=0 d=1 (add x to w), y=1 d=0 (subtract x from w).</p>
+    <div class="formula">Delta_w = e * x &nbsp;&nbsp;&nbsp; Delta_b = e</div>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">ADALINE &amp; LMS (Delta Rule)</div>
+    <p>ADALINE uses a <strong>linear activation</strong> f(z)=z instead of a threshold. LMS minimizes mean squared error via gradient descent:</p>
+    <div class="mono">Error:   e(n) = d(n) - y(n)
+Weight:  w_j(n+1) = w_j(n) + eta * e(n) * x_j(n)
+Bias:    b(n+1)   = b(n)  + eta * e(n)</div>
+    <p>Both Perceptron and ADALINE can only solve <strong>linearly separable</strong> problems. ADALINE suits regression; Perceptron suits classification.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Backpropagation (MLP Training)</div>
+    <p>Multilayer perceptrons require <strong>nonlinear, differentiable</strong> activation functions (e.g. sigmoid). Without nonlinearity, capacity reduces to a single-layer network.</p>
+    <p><strong>Two passes:</strong></p>
+    <ul class="pts">
+      <li><strong>Forward pass:</strong> propagate input to output with frozen weights; compute error signal e_k = d_k - y_k</li>
+      <li><strong>Backward pass:</strong> propagate error gradients from output to input via chain rule; update weights</li>
+    </ul>
+    <div class="mono">Output node gradient:  delta_k = e_k * f'(v_k)
+Hidden node gradient:  delta_j = f'(v_j) * SUM_k(delta_k * w_kj)
+Weight update:         Delta_w_ji = eta * delta_j * y_i
+Bias update:           Delta_b_j  = eta * delta_j</div>
+    <p><strong>Algorithm steps:</strong> (1) Initialize weights small-random &rarr; (2) Present sample &rarr; (3) Forward pass &rarr; (4) Compute errors &rarr; (5) Backward pass with recursive delta &rarr; (6) Update all w and b &rarr; (7) Repeat until stopping criterion.</p>
+  </div>
+</div>
+
+<!-- ══ WEEK 4 ═════════════════════════════════════════════════════════════ -->
+<div class="week w4">
+  <div class="week-header">
+    <div class="week-label">WEEK 4</div>
+    <div class="week-title-box"><h2>Training Strategies, Evaluation &amp; Applications</h2></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Weight Initialization</div>
+    <p>Large weights cause <strong>saturation</strong>: sigmoid/tanh clips near extremes &rarr; gradients ≈ 0 &rarr; vanishing gradient &rarr; slow/no learning.</p>
+    <p><strong>Xavier/Glorot:</strong> best for tanh/sigmoid. <strong>He/MSRA:</strong> best for ReLU. Always match init scheme to activation function.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Learning Rate &eta; &amp; Gradient Descent</div>
+    <div class="formula">w ← w - eta · (∂E/∂w)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>eta Size</th><th>Behavior</th><th>Risk</th></tr>
+      <tr><td>Too small</td><td>Stable, tiny steps, very slow convergence</td><td>May get stuck in local minima</td></tr>
+      <tr><td>Just right</td><td>Fast and stable convergence</td><td>—</td></tr>
+      <tr><td>Too large</td><td>Fast initially, then oscillates (ping-pong)</td><td>Never converges</td></tr>
+      <tr><td>Huge</td><td>Loss explodes to infinity</td><td>Training collapses (divergence)</td></tr>
+    </table></div>
+    <p>The gradient gives direction and relative magnitude — eta controls the actual step size. This applies to all gradient-based optimizers (SGD, Adam, RMSProp).</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Overfitting, Underfitting &amp; Overtraining</div>
+    <p><strong>Underfitting:</strong> model too simple. High training AND test error. <strong>Overfitting:</strong> memorizes noise. Low training error, high test error. <strong>Overtraining:</strong> large network trained too long — perfect on training set, fails on test.</p>
+    <p><strong>Solutions:</strong></p>
+    <ul class="pts">
+      <li><strong>Early stopping:</strong> monitor test error each epoch; stop when it starts rising (confirm over several iterations to avoid noise)</li>
+      <li><strong>Smaller networks:</strong> fewer parameters = forced generalization</li>
+      <li><strong>Noise injection:</strong> add small random displacement epsilon to training points; most useful when data is scarce</li>
+    </ul>
+    <p>Training curve reading: <code>val_loss >> train_loss</code> = overfitting | <code>val_loss ≈ train_loss</code> (both high) = underfitting</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Classification Metrics</div>
+    <p>Confusion matrix entries: TP, TN, FP (Type I error), FN (Type II error).</p>
+    <div class="mono">Accuracy  = (TP + TN) / total
+Precision = TP / (TP + FP)
+Recall    = TP / (TP + FN)
+F1        = 2 * Precision * Recall / (Precision + Recall)
+Specificity = TN / (TN + FP)</div>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Real-World Case Studies</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Task</th><th>Network</th><th>Result</th></tr>
+      <tr><td>Speech recognition (2 speakers)</td><td>60 – 6 – 2</td><td>100% accuracy</td></tr>
+      <tr><td>Ventilator weaning</td><td>3 – 2 – 1</td><td>88.9% on test set</td></tr>
+      <tr><td>Myoelectric signal classification</td><td>2 – 5 – 3 (4 inputs)</td><td>88.5% (294/332)</td></tr>
+      <tr><td>Handwritten digit recognition (MNIST)</td><td>784 – 15 – 10</td><td>10 output classes</td></tr>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ WEEK 5 ═════════════════════════════════════════════════════════════ -->
+<div class="week w5">
+  <div class="week-header">
+    <div class="week-label">WEEK 5</div>
+    <div class="week-title-box"><h2>Self-Organizing Maps &amp; Convolutional Neural Networks</h2></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Unsupervised Learning &amp; Competitive Networks</div>
+    <p>Competitive learning: neurons compete — only the winner (Best Matching Unit, BMU) updates. Losers unchanged. Winner-takes-all (WTA) strategy.</p>
+    <div class="mono">Winner:        i*(x) = argmin_i || x - w_i ||^2
+Weight update: Delta_w_i* = eta * (x - w_i*)
+Losers:        Delta_w_i  = 0  for i != i*</div>
+    <p><strong>Vector Quantization (VQ):</strong> partitions input space R^n into K Voronoi regions. Minimize distortion E = SUM ||x - w_{i*(x)}||^2. Optimal: each prototype = centroid of its Voronoi region. K-Means is batch-learning VQ.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Self-Organizing Maps (SOM) — Kohonen, 1982</div>
+    <p>Maps high-dimensional data onto a 2D grid while preserving topological relationships. Each neuron has grid position r_i in R^2 AND weight vector w_i in R^n.</p>
+    <div class="mono">BMU selection:  i*(x) = argmin_i || x - w_i ||
+Weight update:  w_i(t+1) = w_i(t) + eta(t) * h(i,i*,t) * (x - w_i(t))
+
+Neighborhood (Gaussian):  h(i,i*,t) = exp( -||r_i - r_i*||^2 / (2*sigma(t)^2) )
+Radius decay:             sigma(t) = sigma_0 * exp(-t / tau)</div>
+    <p>Two-phase training: <strong>Ordering</strong> (large eta, large sigma — global organization) → <strong>Convergence</strong> (small eta, small sigma — fine-tuning). PCA initialization gives fastest convergence.</p>
+    <p>Quality metrics: Quantization Error (QE) = prototype accuracy | Topographic Error (TE) = topology preservation.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Convolutional Neural Networks (CNN)</div>
+    <p>Designed for spatial data (images). Key components: <strong>convolutional layers</strong> (local receptive fields, shared weights), <strong>pooling layers</strong> (spatial downsampling), <strong>fully connected layers</strong> (classification).</p>
+    <p>Key property: translation invariance via weight sharing. Hierarchical feature extraction: edges → textures → objects. Huge parameter reduction vs. fully connected.</p>
+  </div>
+</div>
+
+<!-- ══ WEEK 6 ═════════════════════════════════════════════════════════════ -->
+<div class="week w6">
+  <div class="week-header">
+    <div class="week-label">WEEK 6</div>
+    <div class="week-title-box"><h2>Recurrent Neural Networks (RNN) &amp; BPTT</h2></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Why RNNs?</div>
+    <p>Not all problems have fixed-length inputs/outputs. Sequential data (text, speech, time-series) requires memory of past inputs. RNNs use the previous hidden state as part of the current input. An RNN unrolled in time = multiple copies of the same network, each passing h^t to the next step.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">RNN Equations</div>
+    <div class="mono">Pre-activation:  a^t = W_h * h^(t-1) + W_i * x^t
+Hidden state:    h^t = g(a^t)          [g = tanh or sigmoid]
+Output:          y^t = W_o * h^t
+Total loss:      L   = SUM_t L^t</div>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">BPTT — Backpropagation Through Time</div>
+    <p>Gradients flow backward through all time steps via chain rule. All weight matrices share parameters across time steps.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Parameter</th><th>Gradient</th></tr>
+      <tr><td>Output weights W_o</td><td><code>∂L/∂W_o  = SUM_t  delta_t_o  * h_t^T</code></td></tr>
+      <tr><td>Recurrent weights W_hh</td><td><code>∂L/∂W_hh = SUM_t  delta_t_a  * h_(t-1)^T</code></td></tr>
+      <tr><td>Input weights W_xh</td><td><code>∂L/∂W_xh = SUM_t  delta_t_a  * x_t^T</code></td></tr>
+      <tr><td>Bias b_h</td><td><code>∂L/∂b_h  = SUM_t  delta_t_a</code></td></tr>
+    </table></div>
+    <p>Truncated BPTT: for very long sequences, back-propagate only the last K steps to reduce computation.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Vanishing &amp; Exploding Gradients</div>
+    <p><strong>Vanishing:</strong> repeated multiplication of values &lt; 1 &rarr; gradients &rarr; 0 &rarr; cannot learn long-term dependencies.</p>
+    <p><strong>Exploding:</strong> repeated multiplication of values &gt; 1 &rarr; gradients blow up &rarr; training instability.</p>
+    <p><strong>Solutions:</strong> gradient clipping (cap gradient norm), LSTM/GRU architectures, truncated BPTT, better initialization.</p>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="section-label">Training Loop</div>
+    <div class="mono">For each mini-batch:
+  1. Initialize h_0 = 0
+  2. Forward pass: compute h_t and y_hat_t at each step t
+  3. Compute total loss L = SUM_t L^t
+  4. BPTT: propagate gradients backward through all time steps
+  5. Gradient clipping (especially for exploding gradient)
+  6. Optimizer step: SGD / Adam / RMSProp</div>
+  </div>
+</div>
+
+</body>
+</html>

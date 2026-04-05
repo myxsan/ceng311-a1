@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Networks I — Exam Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #A32D2D;    --red-l: #FCEBEB;   --red-m: #E24B4A;
+    --purple: #3C3489; --purple-l: #EEEDFE;
+    --teal: #085041;   --teal-l: #E1F5EE;
+    --blue: #0C447C;   --blue-l: #E6F1FB;
+    --amber: #633806;  --amber-l: #FAEEDA; --amber-m: #EF9F27;
+    --gray: #F5F4F0;   --border: #D8D6CE;
+    --text: #1A1918;   --muted: #6B6860;
+    --mono-bg: #EFEFEB;
+    --ff-sans: 'IBM Plex Sans', sans-serif;
+    --ff-mono: 'IBM Plex Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--ff-sans);
+    background: #FAFAF8;
+    color: var(--text);
+    line-height: 1.65;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--red);
+    border-radius: 12px;
+    padding: 2rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: '!';
+    position: absolute; right: 2rem; top: 50%; transform: translateY(-50%);
+    font-size: 7rem; font-weight: 700;
+    color: rgba(255,255,255,0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .cover-eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55); margin-bottom: 0.5rem;
+  }
+  .cover h1 { font-size: 1.9rem; font-weight: 600; color: #fff; line-height: 1.2; margin-bottom: 0.35rem; }
+  .cover-sub { font-size: 0.88rem; color: rgba(255,255,255,0.65); font-weight: 300; }
+
+  /* ── TOPIC CARD ── */
+  .topic { margin-bottom: 2rem; }
+  .topic-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 0.9rem;
+  }
+  .topic-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .tag-hot { background: var(--red-l); color: var(--red); }
+  .tag-key { background: var(--purple-l); color: var(--purple); }
+  .tag-calc { background: var(--teal-l); color: var(--teal); }
+  .topic-title { font-size: 1.05rem; font-weight: 600; }
+
+  /* ── SECTION LABEL ── */
+  .slabel {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin: 1rem 0 0.4rem;
+  }
+
+  p { font-size: 0.9rem; margin-bottom: 0.45rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── MONO BLOCK ── */
+  .mono {
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: var(--ff-mono);
+    font-size: 0.79rem; line-height: 1.75;
+    margin: 0.45rem 0 0.75rem;
+    white-space: pre; overflow-x: auto;
+    color: #2C2B28;
+  }
+  code {
+    font-family: var(--ff-mono); font-size: 0.82em;
+    background: var(--mono-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 5px; color: var(--blue);
+  }
+
+  /* ── FORMULA LINE ── */
+  .formula {
+    font-family: var(--ff-mono); font-size: 0.85rem;
+    color: var(--blue); font-weight: 600;
+    margin: 0.3rem 0 0.6rem;
+  }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 0.5rem 0 0.9rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  th {
+    background: var(--gray); color: var(--muted);
+    font-weight: 600; font-size: 0.73rem; letter-spacing: 0.04em;
+    text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border);
+  }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #FAFAF7; }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+  /* ── BULLET ── */
+  ul.pts { list-style: none; padding: 0; margin: 0.3rem 0 0.6rem; }
+  ul.pts li { font-size: 0.9rem; padding-left: 1.1rem; margin-bottom: 0.28rem; position: relative; }
+  ul.pts li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+  /* ── WARN BOX ── */
+  .warn {
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber-m);
+    border-radius: 0 6px 6px 0;
+    padding: 0.7rem 1rem;
+    font-size: 0.87rem;
+    color: var(--amber);
+    margin: 0.6rem 0;
+  }
+
+  /* ── TWO COLUMN ── */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 0.5rem 0; }
+  @media (max-width: 600px) { .cols { grid-template-columns: 1fr; } }
+
+  @media print {
+    body { padding: 1rem; font-size: 13px; }
+    .topic { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-eyebrow">Neural Networks I · AYBU</div>
+  <h1>Exam Cheat Sheet</h1>
+  <div class="cover-sub">All lecturer-highlighted topics — compiled from weeks 1–6</div>
+</div>
+
+<!-- ══ RNN ═══════════════════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-hot">GUARANTEED</span>
+    <span class="topic-title">Recurrent Neural Networks (RNN)</span>
+  </div>
+
+  <p>RNNs handle sequential/variable-length inputs by feeding the previous hidden state back as input. An RNN unrolled in time = multiple copies of the same network, each passing h^t to the next step.</p>
+  <div class="mono">Pre-activation:  a^t = W_h * h^(t-1) + W_i * x^t
+Hidden state:    h^t = g(a^t)          [g = tanh or sigmoid]
+Output:          y^t = W_o * h^t
+Total loss:      L   = SUM_t  L^t</div>
+
+  <p><strong>BPTT (Backpropagation Through Time):</strong> gradients flow backward through all time steps via chain rule.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Parameter</th><th>Gradient Formula</th></tr>
+    <tr><td>Output weights W_o</td><td><code>∂L/∂W_o  = SUM_t  delta_t_o * h_t^T</code></td></tr>
+    <tr><td>Recurrent weights W_hh</td><td><code>∂L/∂W_hh = SUM_t  delta_t_a * h_(t-1)^T</code></td></tr>
+    <tr><td>Input weights W_xh</td><td><code>∂L/∂W_xh = SUM_t  delta_t_a * x_t^T</code></td></tr>
+    <tr><td>Bias b_h</td><td><code>∂L/∂b_h  = SUM_t  delta_t_a</code></td></tr>
+  </table></div>
+
+  <p><strong>Vanishing gradient:</strong> products &lt; 1 repeatedly → gradients → 0 → cannot learn long-term dependencies.<br>
+  <strong>Exploding gradient:</strong> products &gt; 1 repeatedly → loss blows up → training collapses.</p>
+  <p><strong>Solutions:</strong> gradient clipping | LSTM/GRU | truncated BPTT | better initialization</p>
+</div>
+
+<hr>
+
+<!-- ══ LOGIC GATES ════════════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-key">KEY</span>
+    <span class="topic-title">Logic Gates — AND / OR / XOR</span>
+  </div>
+  <div class="cols">
+    <div>
+      <div class="tbl-wrap"><table>
+        <tr><th>x1</th><th>x2</th><th>AND</th><th>OR</th><th>XOR</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+      </table></div>
+      <p>AND and OR are <strong>linearly separable</strong> → one perceptron can compute them.<br>
+      XOR is <strong>NOT linearly separable</strong> → requires a multi-layer network.</p>
+    </div>
+    <div>
+      <div class="slabel">Worked example — AND gate</div>
+      <div class="mono">w1=1, w2=1, b=-1.5, threshold=0
+
+(0,0): 0+0-1.5 = -1.5 -> 0 ✓
+(0,1): 0+1-1.5 = -0.5 -> 0 ✓
+(1,0): 1+0-1.5 = -0.5 -> 0 ✓
+(1,1): 1+1-1.5 = +0.5 -> 1 ✓
+
+OR gate: w1=1, w2=1, b=-0.5</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══ WX + BIAS & MATRIX ═════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-calc">CALC</span>
+    <span class="topic-title">wx + bias Formula &amp; Matrix Multiplication</span>
+  </div>
+  <p>Single neuron: compute weighted sum, add bias, apply activation:</p>
+  <div class="formula">z = w1*x1 + w2*x2 + ... + wn*xn + b = W * x + b</div>
+  <div class="formula">y = f(z)    (apply activation function)</div>
+  <p>Layer in matrix form: Z = W * X + b, then Y = f(Z) element-wise</p>
+  <div class="mono">W = [[w11, w12],    x = [[x1],    b = [[b1],
+     [w21, w22]]         [x2]]          [b2]]
+
+Z = W * x + b = [[w11*x1 + w12*x2 + b1],
+                 [w21*x1 + w22*x2 + b2]]
+
+Then apply activation: Y = f(Z)</div>
+</div>
+
+<hr>
+
+<!-- ══ ACTIVATION FUNCTIONS ═══════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-key">KEY</span>
+    <span class="topic-title">Activation Functions</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Function</th><th>Formula</th><th>Derivative</th><th>Notes</th></tr>
+    <tr>
+      <td><strong>Threshold</strong><br>(Perceptron)</td>
+      <td><code>y=1 if sum(wi*xi) > theta, else 0</code></td>
+      <td>Not differentiable</td>
+      <td>Classification only. Cannot use in backprop.</td>
+    </tr>
+    <tr>
+      <td><strong>Sigmoid</strong><br>(Logistic)</td>
+      <td><code>f(z) = 1 / (1 + e^(-z))</code><br>Output: (0, 1)</td>
+      <td><code>f'(z) = f(z)*(1-f(z))</code></td>
+      <td>S-shaped, differentiable. Standard for MLP/backprop. Saturation at extremes → vanishing gradient.</td>
+    </tr>
+    <tr>
+      <td><strong>Linear</strong><br>(ADALINE)</td>
+      <td><code>f(z) = z</code><br>Output: (-inf, +inf)</td>
+      <td><code>f'(z) = 1</code></td>
+      <td>Gradient never vanishes. Used in ADALINE. For regression/filtering.</td>
+    </tr>
+    <tr>
+      <td><strong>tanh</strong></td>
+      <td><code>f(z) = (e^z - e^-z) / (e^z + e^-z)</code><br>Output: (-1, 1)</td>
+      <td><code>f'(z) = 1 - f(z)^2</code></td>
+      <td>Zero-centered. Often better than sigmoid in practice.</td>
+    </tr>
+  </table></div>
+</div>
+
+<hr>
+
+<!-- ══ PERCEPTRON vs ADALINE ══════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-key">KEY</span>
+    <span class="topic-title">Perceptron vs ADALINE</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Property</th><th>Perceptron</th><th>ADALINE</th></tr>
+    <tr><td>Activation function</td><td>Threshold (hard step)</td><td>Linear: f(z) = z</td></tr>
+    <tr><td>Learning rule</td><td>Perceptron rule: Delta_w = e * x</td><td>LMS/Delta rule: Delta_w = eta * e * x</td></tr>
+    <tr><td>Error e computed</td><td>After threshold: e = d - y (binary 0/1)</td><td>Before threshold: e = d - z (real-valued)</td></tr>
+    <tr><td>Weight update</td><td>w(n+1) = w(n) + e(n) * x(n)</td><td>w(n+1) = w(n) + eta * e(n) * x(n)</td></tr>
+    <tr><td>Bias update</td><td>b(n+1) = b(n) + e(n)</td><td>b(n+1) = b(n) + eta * e(n)</td></tr>
+    <tr><td>Best for</td><td>Classification</td><td>Regression / filtering / continuous learning</td></tr>
+    <tr><td>Limitation</td><td>Only linearly separable problems</td><td>Only linear input-output mappings</td></tr>
+  </table></div>
+</div>
+
+<hr>
+
+<!-- ══ LMS ALGORITHM ══════════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-hot">HOT</span>
+    <span class="topic-title">LMS Algorithm (Least Mean Square)</span>
+  </div>
+  <p>Goal: minimize MSE = (1/N) * SUM(d - y)^2. Uses approximate steepest descent — estimates gradient from a single sample at a time.</p>
+  <div class="mono">Error:   e(n) = d(n) - y(n)
+Weight:  w_j(n+1) = w_j(n) + eta * e(n) * x_j(n)
+Bias:    b(n+1)   = b(n)  + eta * e(n)</div>
+  <p>Stable learning requires: <code>eta &lt; 1 / lambda_max</code> (largest eigenvalue of X^T * X).</p>
+  <p>Limitation: linear network can only learn linear input-output mappings.</p>
+
+  <div class="slabel">Three cases for perceptron learning rule</div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Condition</th><th>Error e</th><th>Delta_w</th><th>Meaning</th></tr>
+    <tr><td>Output correct (y = d)</td><td>0</td><td>0</td><td>No change</td></tr>
+    <tr><td>y = 0, d = 1</td><td>+1</td><td>+x</td><td>Pull weight vector toward input</td></tr>
+    <tr><td>y = 1, d = 0</td><td>-1</td><td>-x</td><td>Push weight vector away from input</td></tr>
+  </table></div>
+  <div class="formula">Unified rule:  Delta_w = (d - y) * x = e * x</div>
+</div>
+
+<hr>
+
+<!-- ══ BACKPROPAGATION ════════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-hot">HOT</span>
+    <span class="topic-title">Backpropagation Algorithm</span>
+  </div>
+  <div class="cols">
+    <div>
+      <div class="slabel">Forward Pass (weights frozen)</div>
+      <div class="mono">For each layer l:
+  z_l = W_l * y_(l-1) + b_l
+  y_l = f(z_l)
+
+Compute output error:
+  e_k = d_k - y_k</div>
+    </div>
+    <div>
+      <div class="slabel">Backward Pass</div>
+      <div class="mono">Output node:
+  delta_k = e_k * f'(v_k)
+
+Hidden node:
+  delta_j = f'(v_j) * SUM_k(delta_k * w_kj)
+
+Updates:
+  Delta_w_ji = eta * delta_j * y_i
+  Delta_b_j  = eta * delta_j</div>
+    </div>
+  </div>
+  <p><strong>Energy (cost function) per sample:</strong> <code>E = 0.5 * SUM_j (e_j)^2</code> — the quantity minimized by gradient descent.</p>
+  <p><strong>Full algorithm steps:</strong> (1) Initialize weights small random → (2) Present sample → (3) Forward pass → (4) Compute output errors → (5) Backward pass with recursive delta computation → (6) Update all w and b → (7) Repeat until stopping criterion.</p>
+</div>
+
+<hr>
+
+<!-- ══ TOPOLOGIES & ADJACENCY MATRIX ══════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-key">KEY</span>
+    <span class="topic-title">Network Topologies &amp; Adjacency (Weight) Matrix</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Type</th><th>Key Property</th></tr>
+    <tr><td><strong>Fully connected</strong></td><td>Every node to all others. Asymmetric connections possible. Seldom used (too many parameters).</td></tr>
+    <tr><td><strong>Layered network</strong></td><td>Nodes in layers. No connection from layer j to k if j &gt; k. Intra-layer connections may exist.</td></tr>
+    <tr><td><strong>Acyclic network</strong></td><td>No cycles at all. No intra-layer connections in input and output layers.</td></tr>
+    <tr><td><strong>Feedforward</strong></td><td>Subclass of acyclic. Connections ONLY from layer i to layer i+1. Simplest computation.</td></tr>
+    <tr><td><strong>Recurrent</strong></td><td>Has directed cycles. Previous output feeds back. More biologically realistic.</td></tr>
+    <tr><td><strong>Modular</strong></td><td>Several sub-network modules combined for complex tasks.</td></tr>
+  </table></div>
+
+  <div class="slabel">Adjacency / Weight Matrix</div>
+  <p>W[i][j] = weight from node i to node j. Zero = no connection. Upper triangular = feedforward/acyclic.</p>
+  <div class="mono">Example network with nodes I, II, III, IV:
+
+        I     II    III   IV
+   I  [ 0,    0,    1.9,  0.1 ]
+  II  [ 0.4,  0,    0.3,  0.7 ]
+ III  [ 0,    0,    0,    0.8 ]
+  IV  [ 0,    0,    0,    0   ]
+
+Row = "from", Column = "to".
+Non-zero above diagonal only -> feedforward/acyclic network.
+To compute output: Z = W * x + b, then apply activation.</div>
+</div>
+
+<hr>
+
+<!-- ══ LEARNING RATE ══════════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-key">KEY</span>
+    <span class="topic-title">Learning Rate Effects</span>
+  </div>
+  <div class="formula">Update rule:  w ← w - eta * (∂E/∂w)</div>
+  <p>The gradient gives direction and relative magnitude only. eta controls the actual step size. This applies to ALL gradient-based optimizers.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>eta Size</th><th>Behavior</th><th>Risk</th></tr>
+    <tr><td>Too small</td><td>Stable, tiny steps, very slow convergence</td><td>May get stuck in local minima</td></tr>
+    <tr><td>Just right</td><td>Fast and stable convergence to minimum</td><td>—</td></tr>
+    <tr><td>Too large</td><td>Fast initially, then oscillates (ping-pong around minimum)</td><td>Never converges</td></tr>
+    <tr><td>Huge</td><td>Loss explodes to infinity</td><td>Training collapses (divergence)</td></tr>
+  </table></div>
+</div>
+
+<hr>
+
+<!-- ══ OVERTRAINING / EARLY STOPPING / NOISE INJECTION ═══════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-hot">HOT</span>
+    <span class="topic-title">Overtraining, Early Stopping &amp; Noise Injection (Week 4 last slides)</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Problem</th><th>Symptom</th><th>Fix</th></tr>
+    <tr><td><strong>Underfitting</strong></td><td>High train loss AND high test loss. val_loss ≈ train_loss (both high).</td><td>Add more layers/neurons, train longer</td></tr>
+    <tr><td><strong>Overfitting</strong></td><td>Low train loss, HIGH test loss. val_loss >> train_loss.</td><td>Early stopping, smaller network, noise injection</td></tr>
+    <tr><td><strong>Overtraining</strong></td><td>Large network memorizes training set perfectly. Fails on test/new data.</td><td>Stop before test error begins to rise</td></tr>
+  </table></div>
+
+  <div class="cols">
+    <div>
+      <div class="slabel">Early Stopping</div>
+      <ul class="pts">
+        <li>Train weights on training set ONLY</li>
+        <li>Monitor test error after each epoch</li>
+        <li>Stop when test error starts rising</li>
+        <li>Confirm the rise over several iterations (avoid noise)</li>
+        <li>Weights never directly trained on test set → generalizes to future data</li>
+      </ul>
+    </div>
+    <div>
+      <div class="slabel">Smaller Networks &amp; Noise Injection</div>
+      <ul class="pts">
+        <li><strong>Smaller networks:</strong> fewer parameters = less capacity to memorize = forced generalization</li>
+        <li><strong>Noise injection:</strong> x_noisy = x + epsilon (small random displacement)</li>
+        <li>Artificially enlarges the training set</li>
+        <li>Prevents exact memorization of data points</li>
+        <li>Most effective when training data is scarce</li>
+      </ul>
+    </div>
+  </div>
+  <div class="warn">
+    Training curve reading: <code>val_loss >> train_loss</code> = overfitting &nbsp;|&nbsp;
+    <code>val_loss ≈ train_loss</code> (both high) = underfitting &nbsp;|&nbsp;
+    <code>val_loss &lt; train_loss</code> = check your data split!
+  </div>
+</div>
+
+<hr>
+
+<!-- ══ UPDATE BIAS SUMMARY ═════════════════════════════════════════════════ -->
+<div class="topic">
+  <div class="topic-header">
+    <span class="topic-tag tag-hot">HOT</span>
+    <span class="topic-title">Bias Update — Every Algorithm</span>
+  </div>
+  <p>Bias behaves like a weight connected to a constant input of 1. It shifts the decision boundary independently of the input.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Algorithm</th><th>Update Rule</th><th>Notes</th></tr>
+    <tr><td><strong>Perceptron</strong></td><td><code>b(n+1) = b(n) + e(n)</code></td><td>e = d - y (binary error)</td></tr>
+    <tr><td><strong>LMS / ADALINE</strong></td><td><code>b(n+1) = b(n) + eta * e(n)</code></td><td>e = d - z (real-valued error)</td></tr>
+    <tr><td><strong>Backpropagation</strong></td><td><code>Delta_b_j = eta * delta_j</code></td><td>delta_j = local gradient of neuron j</td></tr>
+    <tr><td><strong>RNN (BPTT)</strong></td><td><code>∂L/∂b_h = SUM_t delta_t_a</code></td><td>Sum pre-activation errors over all time steps</td></tr>
+  </table></div>
+</div>
+
+</body>
+</html>
